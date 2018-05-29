@@ -144,7 +144,10 @@
     </div>
     <div class="row" style="background-color: #12B362; height: 20px;">&nbsp;</div>
     <div class="row" style="background-color: #12B362; height: 100px;">
-      <div class='col' style="text-align: center;color:#ffffff;font-size:10px;">goodyfx@163.com</div>
+      <div class='col' style="text-align: center;color:#ffffff;font-size:10px;">
+        <div>goodyfx@163.com</div>
+        <div><a href="https://nebwallet.github.io/">点击创建钱包文件</a></div>
+      </div>
     </div>
 
   </div>
@@ -164,7 +167,8 @@
       var modalMode = MODAL_NICKNAME;
 
       // var contractAddr = "n1pFJDMnH8DGcV4nmAQtGKRdQKxhqAETRzA"
-      var contractAddr = "n1ohSEnYdPP9nCMztsBeTCbqSeBJ6kaBFvB"
+      var contractAddr = "n1jzrje383bwB7CWa7wddosWXuPdK8HXd3D";
+      var contractTx = "0681276c906be991fd43e177d1b12c7a304bb8ee3a5bbf24914f91f8b3277f3e";
       var nebulas = require("nebulas"),
             Account = nebulas.Account,
             neb = new nebulas.Neb();
@@ -185,7 +189,7 @@
       var wheather = "";
       var mood = "";
 
-      neb.setRequest(new nebulas.HttpRequest("https://testnet.nebulas.io"));
+      neb.setRequest(new nebulas.HttpRequest("https://mainnet.nebulas.io"));
       inprogress("#activeWallet", "打开日记本");
       neb.api.getNebState().then(function(state) {
         console.log("Node info: ", state);
@@ -293,6 +297,7 @@
             var newNickName = $("#nickNameInput").val().trim();
             if(newNickName === "") {
               showAlert("请输入新的昵称!", FAIL);
+              done("#modalSubmit", "确定")
               break;
             }
 
@@ -329,7 +334,7 @@
                 showAlert("昵称设置成功!", SUCCESS);
                 nickName = newNickName;
                 $("#nickName").html("昵称：" + nickName);
-                done("#publish", "确定");
+                done("#modalSubmit", "确定");
                 $("#myModal").modal('hide');
                 hide("#setNickname");
               })
