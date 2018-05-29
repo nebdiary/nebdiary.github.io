@@ -1,0 +1,43 @@
+body {
+  background-color: #12B362;
+}
+
+.container {
+  background-color: white;
+}
+
+.hide {
+  display: none
+}
+
+button: {
+  background-color: green
+}
+
+.inline {
+  float: left;
+  clear: both;
+}
+
+.floatingAlert {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  width:auto;
+  z-index: 100;
+  width: 300px;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.diaryLabel {
+  color: green;
+  font-size: 10px;
+}
+
+.diaryLabelText {
+  color: green;
+  font-size: 10px;
+}

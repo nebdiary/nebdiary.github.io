@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>星云日记本</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    <link rel="stylesheet" href="./css/diary.css"  type="text/css" />
+</head>
+<body>
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  	<div class="modal-dialog">
+  		<div class="modal-content">
+  			<div class="modal-header">
+  				<h4 class="modal-title" id="myModalLabel">
+  					模态框（Modal）标题
+  				</h4>
+  				<button  id="modalCancel1" type="button" class="close" aria-hidden="true">
+  					&times;
+  				</button>
+  			</div>
+  			<div id="setNickname" class="modal-body hide">
+  				<input class="form-control" id="nickNameInput" placeholder="请输入新昵称">
+  			</div>
+
+  			<div id="diaryShowBox" class="modal-body hide">
+          <div>
+    				<label class='diaryLabel'>日期：</label><label class='diaryLabelText' id="diaryDate"></label>&nbsp;
+            <label class='diaryLabel'>天气：</label><label class='diaryLabelText' id="diaryWheather"></label>&nbsp;
+            <label class='diaryLabel'>心情：</label><label class='diaryLabelText' id="diaryMood"></label>
+          </div>
+          <p id="diaryContent" />
+  			</div>
+  			<div class="modal-footer">
+  				<button id="modalCancel2" type="button" class="btn btn-default">关闭
+  				</button>
+  				<button id="modalSubmit" type="button" class="btn btn-primary">
+  					确定
+  				</button>
+  			</div>
+  		</div><!-- /.modal-content -->
+  	</div><!-- /.modal -->
+  </div>
+
+  <div class="alert alert-danger alert-dismissable hide floatingAlert" id="alertPannel">
+    <button type="button" class="close" data-dismiss="alert"
+        aria-hidden="true">
+      &times;
+    </button>
+    <div id="alertText">
+       错误！请进行一些更改。
+    </div>
+  </div>
+
+  <div id="container" class="container">
+    <div class="row" style="background-color: #12B362; height: 100px; line-height: 100px;">
+      <div class="col" style="color: white;">
+        <div class="inline">
+          <img src="images/NebulasLogoIcon.svg" style="height: 100px; width:100px;"/>
+        </div>
+
+
+          <span style="font-size: 30px;">星云日记本</span>&nbsp;&nbsp;
+          <span style="color: #71ecae;">铭记你的生活</span>
+
+
+      </div>
+    </div>
+    <div class="row">
+      &nbsp;
+    </div>
+    <div id="walletOpen" class="row">
+      <div class="col">
+        <div class="form-group">
+          <label for="inputfile">请选择钱包文件：</label>
+          <input type="file" id="keyfile" onchange="getKeyFile(this)">
+        </div>
+        <div class="form-group">
+          <label for="name">请输入钱包密码：</label>
+          <input type="password" class="form-control" id="password" placeholder="请输入钱包密码">
+        </div>
+        <button class="btn btn-success btn-block" id="activeWallet">打开日记本</button>
+      </div>
+    </div>
+
+    <div id="diaryInfo" class="row hide">
+      <div class="col-6">
+        <label id="nickName"></label>
+        <button id="btnChangeNick" data-toggle="modal" data-target="#myModal">修改昵称</button>
+      </div>
+      <div class="col-6" id="address"></div>
+    </div>
+
+    <!-- <div class="row" style="height: 50px; margin-top: 20px;">
+
+    </div> -->
+
+    <div class="row">&nbsp;</div>
+    <div id="diaryBoard" class="row hide">
+      <div class="col-8">
+        <h1>写日记</h1>
+
+        <div class="dropdown">
+          <button class="btn dropdown-toggle" type="button" id="wheatherDropDownButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            选择天气
+          </button>
+          <div class="dropdown-menu" aria-labelledby="wheatherDropDownButton">
+            <a id="wheather-item" class="dropdown-item" onClick="wheatherSelect(this)" href="#">晴</a>
+            <a id="wheather-item" class="dropdown-item" onClick="wheatherSelect(this)" href="#">阴</a>
+            <a id="wheather-item" class="dropdown-item" onClick="wheatherSelect(this)" href="#">多云</a>
+            <a id="wheather-item" class="dropdown-item" onClick="wheatherSelect(this)" href="#">雨</a>
+            <a id="wheather-item" class="dropdown-item" onClick="wheatherSelect(this)" href="#">雪</a>
+          </div>
+        </div>
+        <br />
+
+        <div class="dropdown">
+          <button class="btn dropdown-toggle" type="button" id="moodDropDownButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            选择心情
+          </button>
+          <div class="dropdown-menu" aria-labelledby="moodDropDownButton">
+            <a id="mood-item" class="dropdown-item" onClick="moodSelect(this)" href="#">兴奋</a>
+            <a id="mood-item" class="dropdown-item" onClick="moodSelect(this)" href="#">高兴</a>
+            <a id="mood-item" class="dropdown-item" onClick="moodSelect(this)" href="#">平静</a>
+            <a id="mood-item" class="dropdown-item" onClick="moodSelect(this)" href="#">失落</a>
+            <a id="mood-item" class="dropdown-item" onClick="moodSelect(this)" href="#">伤心</a>
+          </div>
+        </div>
+
+        <br />
+        <div>内容：</div>
+        <div class="form-group"><textarea cols="50" rows="10" id="content" class="form-control"></textarea></div>
+        <div class="form-group"><button id="publish" class="btn btn-success">发布</button></div>
+      </div>
+
+      <div class="col-4" style="border-left: dashed 1px grey">
+        <button id="search" class="btn btn-success btn-block">获取我的日记</button>
+        <br />
+        <ul id="diaryList" class="list-group">
+
+        </ul>
+        <!-- <div id="diaryList"></div> -->
+      </div>
+    </div>
+    <div class="row" style="background-color: #12B362; height: 20px;">&nbsp;</div>
+    <div class="row" style="background-color: #12B362; height: 100px;">
+      <div class='col' style="text-align: center;color:#ffffff;font-size:10px;">goodyfx@163.com</div>
+    </div>
+
+  </div>
+
+
+    <script src="./js/moment.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+    <script src="./js/nebulas.js"></script>
+    <script src="./js/nebPay.js"></script>
+    <script>
+      const SUCCESS = true, FAIL = false;
+      const MODAL_NICKNAME = 1;
+      const MODAL_DIARY = 2;
+
+      var modalMode = MODAL_NICKNAME;
+
+      // var contractAddr = "n1pFJDMnH8DGcV4nmAQtGKRdQKxhqAETRzA"
+      var contractAddr = "n1ohSEnYdPP9nCMztsBeTCbqSeBJ6kaBFvB"
+      var nebulas = require("nebulas"),
+            Account = nebulas.Account,
+            neb = new nebulas.Neb();
+
+      // var moment = require("moment");
+
+      var nickName = "";
+      var address = "";
+      var secret = "";
+      var keyFile = "";
+      var keyFileContent = "";
+      var password  = "";
+      var account = Account.NewAccount();
+      var chainId = "";
+      var diaries = [];
+      var selectedDiary = {};
+
+      var wheather = "";
+      var mood = "";
+
+      neb.setRequest(new nebulas.HttpRequest("https://testnet.nebulas.io"));
+      inprogress("#activeWallet", "打开日记本");
+      neb.api.getNebState().then(function(state) {
+        console.log("Node info: ", state);
+        chainId = state.chain_id;
+        console.log("chainId: ", chainId);
+        done("#activeWallet", "打开日记本");
+      }).catch(function(err) {
+        showAlert("无法连接到星云区块链，请稍后刷新重试。", FAIL)
+      });
+
+      function hide(node) {
+        $(node).addClass("hide");
+      }
+
+      function show(node) {
+        $(node).removeClass("hide");
+      }
+
+      function getKeyFile(node) {
+        if(node.files && node.files[0] ){
+          keyFile = node.files[0];
+        }else if(node.files && node.files.item(0)) {
+          keyFile = node.files.item(0);
+        }
+        console.log("KeyFile: ", keyFile);
+        console.log("KeyFile Size: ", keyFile.size);
+        var reader = new FileReader();
+        reader.readAsText(keyFile, "UTF-8");
+        reader.onload = function(evt) {
+          keyFileContent = evt.target.result;
+          console.log("KeyFile content: ", keyFileContent)
+        }
+      }
+
+      function showAlert(message, success) {
+        var removeClass = "alert-success";
+        var addClass = "alert-danger";
+        if(success) {
+          removeClass = "alert-danger";
+          addClass = "alert-success";
+        }
+        $("#alertText").html(message);
+        $("#alertPannel").removeClass(removeClass);
+        $("#alertPannel").addClass(addClass);
+        // $("#alertBox").removeClass("hide");
+        show("#alertPannel");
+        setTimeout(function () {
+            hideAlert();
+        }, 5000);
+      }
+
+      function hideAlert() {
+        // $("#alertBox").addClass("hide");
+        hide("#alertPannel");
+      }
+
+      function inprogress(button, message) {
+        $(button).attr("disabled",true);
+        $(button).html(message);
+      }
+
+      function done(button, message) {
+        $(button).attr("disabled",false);
+        $(button).html(message);
+      }
+
+      function modalCancel() {
+        $("#myModal").modal('hide');
+        switch (modalMode) {
+            case MODAL_NICKNAME:
+              hide("#setNickname");
+              break;
+            case MODAL_DIARY:
+              hide("#diaryShowBox");
+            default:
+        }
+      }
+
+      function wheatherSelect(event) {
+        wheather = event.text;
+        console.log("wheather: ", wheather);
+        $("#wheatherDropDownButton").html(wheather)
+      }
+
+      function moodSelect(event) {
+        mood = event.text;
+        console.log("Mood: ", mood);
+        $("#moodDropDownButton").html(mood)
+      }
+
+      $("#modalCancel1").click(modalCancel);
+      $("#modalCancel2").click(modalCancel);
+
+      $("#btnChangeNick").click(function(){
+        modalMode = MODAL_NICKNAME;
+        show("#setNickname");
+        $("#nickNameInput").val(nickName);
+        $("#myModalLabel").html("修改昵称");
+      })
+
+      $("#modalSubmit").click(function(){
+        switch (modalMode) {
+          case MODAL_NICKNAME:
+            inprogress("#modalSubmit", "设置中...")
+            var newNickName = $("#nickNameInput").val().trim();
+            if(newNickName === "") {
+              showAlert("请输入新的昵称!", FAIL);
+              break;
+            }
+
+            neb.api.getAccountState({address: address}).then(function(state){
+              console.log("Account State: ", state);
+
+              var callFunc = "setWriterName";
+              var callArgs = "[\""+newNickName+"\", \""+secret+"\"]";
+              var contract = {
+                 function: callFunc,
+                 args: callArgs
+              }
+
+              var tx = new nebulas.Transaction({
+                 chainID: chainId,
+                 from: account,
+                 to: contractAddr,
+                 nonce: parseInt(state.nonce) + 1,
+                 value: 0,
+                 gasPrice: 1000000,
+                 gasLimit: 2000000,
+                 contract: contract
+              });
+
+              console.log("Tx: ", tx);
+
+              tx.signTransaction();
+
+              var txData = tx.toProtoString();
+              console.log("Tx Data: ", txData);
+
+              return neb.api.sendRawTransaction({data: txData}).then(function(hash){
+                console.log("transaction: ", hash);
+                showAlert("昵称设置成功!", SUCCESS);
+                nickName = newNickName;
+                $("#nickName").html("昵称：" + nickName);
+                done("#publish", "确定");
+                $("#myModal").modal('hide');
+                hide("#setNickname");
+              })
+
+            }).catch(err => {
+              console.log("Failed to set the nickName.", err);
+              showAlert("昵称设置失败: " + err, FAIL);
+              done("#modalSubmit", "确定");
+            })
+
+            break;
+          case MODAL_DIARY:
+            $("#myModal").modal('hide');
+            hide("#diaryShowBox");
+          default:
+
+        }
+      })
+
+      $("#activeWallet").click(function() {
+        console.log("Trying to active wallet!");
+        inprogress("#activeWallet", "加载中，请稍后...");
+        password = $("#password").val().trim();
+        if(keyFileContent === "" || password === "") {
+          showAlert("请将信息填写完整。", FAIL);
+          done("#activeWallet", "提交")
+        } else {
+          console.log("KeyFile content: ", keyFileContent)
+          console.log("Key file: ", keyFile);
+          console.log("password: ", password);
+
+          var keyObject = JSON.parse(keyFileContent);
+          try {
+            account.fromKey(keyObject, password, false);
+            address = account.getAddressString();
+            secret = account.getPrivateKeyString().substring(0,10);
+            console.log("Address: ", address);
+            console.log("Secret: ", secret);
+
+            $("#address").html("我的地址：" + address);
+
+            neb.api.call({
+              from: address,
+              to: contractAddr,
+              value: 0,
+              gasPrice: 1000000,
+              gasLimit: 2000000,
+              contract: {
+                 function: "getWriterName",
+                 args: "[\"" + secret +"\"]"
+              }
+            }).then(function(tx){
+              console.log(console.log("transaction: ", tx));
+              nickName = tx.result;
+              nickName = nickName.substring(1, nickName.length-1);
+              showAlert("钱包加载成功!", SUCCESS);
+              $("#nickName").html("昵称：" + nickName);
+              // $("#diaryInfo").removeClass("hide");
+              show("#diaryInfo")
+              // $("#walletOpen").addClass("hide");
+              hide("#walletOpen");
+              show("#diaryBoard");
+            }).catch(err => {
+              console.log("Failed to get writer name.", err);
+              showAlert("获取账号昵称失败，请重试。", FAIL);
+              done("#activeWallet", "提交")
+            })
+          } catch (err) {
+            console.log("Wrong password or keyFile.", err);
+            showAlert("Key文件或密码错误！", FAIL);
+            done("#activeWallet", "提交")
+          }
+        }
+      });
+
+      var NebPay = require("nebpay");
+      var nebPay = new NebPay();
+
+      var serialNumber;
+
+      Date.prototype.format = function() {
+        return this.getFullYear() + "-" + (this.getMonth() + 1) + "-" + this.getDate() + " " + this.getHour + ":" + this.getMin;
+      }
+
+      // 定时器
+      var intervalQuery;
+
+      $("#publish").click(function () {
+            inprogress("#publish", "发布中，请稍后...")
+            // var date = new Date();
+            var pubDate = moment().format("YYYY-MM-DD HH:mm:ss");
+            console.log("Pubdate: ", pubDate);
+
+            var content = encodeURI($("#content").val().trim());
+
+            if (content === "" || wheather === "" || mood === "") {
+                showAlert("内容不能为空！", FAIL);
+                done("#publish", "发布");
+                return;
+            }
+
+            var callFunc = "add";
+            var callArgs = "[\""+pubDate+"\",\""+content+"\", \""+wheather+"\", \""+mood+"\", \""+secret+"\"]";
+            var contract = {
+               function: callFunc,
+               args: callArgs
+            }
+
+            console.log("Will call contract: ", contract);
+
+            neb.api.getAccountState({address: address}).then(function(state){
+              console.log("Account State: ", state);
+
+              var tx = new nebulas.Transaction({
+                 chainID: chainId,
+                 from: account,
+                 to: contractAddr,
+                 nonce: parseInt(state.nonce) + 1,
+                 value: 0,
+                 gasPrice: 1000000,
+                 gasLimit: 2000000,
+                 contract: contract
+              });
+
+              console.log("Tx: ", tx);
+
+              tx.signTransaction();
+
+              var txData = tx.toProtoString();
+              console.log("Tx Data: ", txData);
+
+              return neb.api.sendRawTransaction({data: txData}).then(function(hash){
+                console.log("transaction: ", hash);
+                showAlert("日记发表成功! 请30秒后获取。", SUCCESS);
+                done("#publish", "发布");
+                $("#content").val("");
+              })
+
+            }).catch(err => {
+              console.log("Failed to push the diary.", err);
+              showAlert("日记发表失败: " + err, FAIL);
+              done("#publish", "发布");
+            })
+        });
+
+       // // 查看信息
+       $("#search").click(function () {
+         inprogress("#search", "加载中...")
+
+            // var from = Account.NewAccount().getAddressString();
+            var from = address;
+            var value = "0";   // 金额
+            var nonce = "0";   // 交易序号
+            var gas_price = "1000000" // 手续费价格
+            var gas_limit = "2000000" // 手续费限制
+            var callFunction = "getDiaries";
+            var callArgs = "[\"" + secret +"\"]"; //in the form of ["args"]
+            var contract = { // 合约
+                "function": callFunction,  // 方法名
+                "args": callArgs            // 参数
+            }
+
+            neb.api.call(from, contractAddr, value, nonce, gas_price, gas_limit, contract).then(function (resp) {
+                console.log("My diaries: ", resp.result)
+                var ressultObj = JSON.parse(resp.result);
+                diaries = ressultObj.sort(function(obj1, obj2){
+                  return obj1.date < obj2.date;
+                })
+                $("#diaryList").html("");
+                var i = 0;
+                ressultObj.map(function(obj) {
+                  $("#diaryList").append('<li id="'+ i +'" onClick="showDiaryModal(this)" class="list-group-item pointer"><span class="badge diaryLabel">'+ obj.date +'</span>'+ decodeURI(obj.diary) +'</li>')
+                  i ++;
+                })
+
+                done("#search", "刷新");
+            }).catch(function (err) {
+                console.log("error:" + err.message);
+                done("#search", "获取失败，请重试");
+            })
+        });
+
+        function showDiaryModal(event) {
+          console.log("Event: ", event);
+          console.log("Event id: ", event.id);
+          selectedDiary = diaries[parseInt(event.id)]
+          modalMode = MODAL_DIARY;
+
+          $("#myModalLabel").html("日记");
+          $("#diaryDate").html(selectedDiary.date);
+          $("#diaryWheather").html(selectedDiary.wheather);
+          $("#diaryMood").html(selectedDiary.mood);
+          $("#diaryContent").html(decodeURI(selectedDiary.diary));
+          show("#diaryShowBox");
+          $("#myModal").modal("show");
+        }
+
+    </script>
+</body>
+</html>
